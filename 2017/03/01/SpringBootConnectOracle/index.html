@@ -3,14 +3,48 @@
 <head>
   <meta charset="utf-8">
   
-  <title>三川腸中!</title>
+  <title>Spring Boot JDBC connect Oracle | 三川腸中!</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="三川腸中!">
-<meta property="og:url" content="https://erics.github.io/index.html">
+  <meta name="description" content="1.增加Gradle dependency：spring-boot-starter-jdbc
+2.使用Spring Boot default配置：application.properties
+3.SQL
+4.使用JdbcTemplate
+4.1.Bean
+4.2.DAO interface
+4.3.DAO implement
+4.4.Service interface
+4.5.Service">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring Boot JDBC connect Oracle">
+<meta property="og:url" content="https://erics.github.io/2017/03/01/SpringBootConnectOracle/index.html">
 <meta property="og:site_name" content="三川腸中!">
+<meta property="og:description" content="1.增加Gradle dependency：spring-boot-starter-jdbc
+2.使用Spring Boot default配置：application.properties
+3.SQL
+4.使用JdbcTemplate
+4.1.Bean
+4.2.DAO interface
+4.3.DAO implement
+4.4.Service interface
+4.5.Service">
+<meta property="og:image" content="https://erics.github.io/images/SpringBootConnectOracle/2017-03-01_16.53.35.png">
+<meta property="og:image" content="https://erics.github.io/images/SpringBootConnectOracle/2017-03-01_17.03.10.png">
+<meta property="og:image" content="https://erics.github.io/images/SpringBootConnectOracle/2017-03-01_17.04.33.png">
+<meta property="og:image" content="https://erics.github.io/images/SpringBootConnectOracle/2017-03-01_17.09.52.png">
+<meta property="og:image" content="https://erics.github.io/images/SpringBootConnectOracle/2017-03-01_17.11.21.png">
+<meta property="og:updated_time" content="2017-03-01T09:13:54.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="三川腸中!">
+<meta name="twitter:title" content="Spring Boot JDBC connect Oracle">
+<meta name="twitter:description" content="1.增加Gradle dependency：spring-boot-starter-jdbc
+2.使用Spring Boot default配置：application.properties
+3.SQL
+4.使用JdbcTemplate
+4.1.Bean
+4.2.DAO interface
+4.3.DAO implement
+4.4.Service interface
+4.5.Service">
+<meta name="twitter:image" content="https://erics.github.io/images/SpringBootConnectOracle/2017-03-01_16.53.35.png">
   
     <link rel="alternate" href="/atom.xml" title="三川腸中!" type="application/atom+xml">
   
@@ -59,9 +93,7 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main">
-  
-    <article id="post-SpringBootConnectOracle" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main"><article id="post-SpringBootConnectOracle" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/03/01/SpringBootConnectOracle/" class="article-date">
   <time datetime="2017-03-01T03:51:06.000Z" itemprop="datePublished">2017-03-01</time>
@@ -74,8 +106,8 @@
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/03/01/SpringBootConnectOracle/">Spring Boot JDBC connect Oracle</a>
+    <h1 class="article-title" itemprop="name">
+      Spring Boot JDBC connect Oracle
     </h1>
   
 
@@ -137,101 +169,19 @@
     </footer>
   </div>
   
-</article>
-
-
+    
+<nav id="article-nav">
   
-    <article id="post-SpringBootFirst" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/02/24/SpringBootFirst/" class="article-date">
-  <time datetime="2017-02-24T08:34:33.000Z" itemprop="datePublished">2017-02-24</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/02/24/SpringBootFirst/">Spring Boot First</a>
-    </h1>
+    <a href="/2017/02/24/SpringBootFirst/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Spring Boot First</div>
+    </a>
   
+</nav>
 
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="new-gradle-eclipse-project"><a href="#New-Gradle-Eclipse-project" class="headerlink" title="New Gradle Eclipse project"></a>New Gradle Eclipse project</h2><h3 id="buildgradle"><a href="#build-gradle" class="headerlink" title="build.gradle"></a>build.gradle</h3><figure class="highlight gradle"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">buildscript</span> &#123;</div><div class="line">    <span class="keyword">repositories</span> &#123;</div><div class="line">        mavenCentral()</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">dependencies</span> &#123;</div><div class="line">        <span class="keyword">classpath</span>(<span class="string">"org.springframework.boot:spring-boot-gradle-plugin:1.5.1.RELEASE"</span>)</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">apply plugin: <span class="string">'java'</span></div><div class="line">apply plugin: <span class="string">'eclipse'</span></div><div class="line">apply plugin: <span class="string">'spring-boot'</span></div><div class="line"></div><div class="line"><span class="keyword">sourceCompatibility</span> = <span class="number">1.8</span></div><div class="line">version = <span class="string">'1.0'</span></div><div class="line"></div><div class="line">jar &#123;</div><div class="line">    manifest &#123;</div><div class="line">        attributes <span class="string">'Implementation-Title'</span>: <span class="string">'Spring boot first'</span>,</div><div class="line">                   <span class="string">'Implementation-Version'</span>: version</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">repositories</span> &#123;</div><div class="line">    mavenCentral()</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">dependencies</span> &#123;</div><div class="line">    <span class="keyword">compile</span> <span class="keyword">group</span>: <span class="string">'commons-collections'</span>, name: <span class="string">'commons-collections'</span>, version: <span class="string">'3.2'</span></div><div class="line">    </div><div class="line">    <span class="keyword">compile</span> <span class="string">'org.springframework.boot:spring-boot-starter-web:1.5.1.RELEASE'</span></div><div class="line">    </div><div class="line">    testCompile <span class="keyword">group</span>: <span class="string">'junit'</span>, name: <span class="string">'junit'</span>, version: <span class="string">'4.+'</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h3 id="applicationdemojava"><a href="#ApplicationDemo-java" class="headerlink" title="ApplicationDemo.java"></a>ApplicationDemo.java</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> com.monster.app;</div><div class="line"></div><div class="line"><span class="keyword">import</span> org.springframework.boot.SpringApplication;</div><div class="line"><span class="keyword">import</span> org.springframework.boot.autoconfigure.SpringBootApplication;</div><div class="line"></div><div class="line"><span class="meta">@SpringBootApplication</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ApplicationDemo</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">        System.out.println(<span class="string">"springApplication run!"</span>);</div><div class="line">        SpringApplication.run(ApplicationDemo.class, args);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h3 id="restfulapiwebdemo"><a href="#RestfulApiWebDemo" class="headerlink" title="RestfulApiWebDemo"></a>RestfulApiWebDemo</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> com.monster.app;</div><div class="line"></div><div class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.RequestMapping;</div><div class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.RestController;</div><div class="line"></div><div class="line"><span class="meta">@RestController</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RestfulApiWebDemo</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="meta">@RequestMapping</span>(<span class="string">"/"</span>)</div><div class="line">    <span class="function">String <span class="title">home</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="string">"Hello World!"</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@RequestMapping</span>(<span class="string">"/test"</span>)</div><div class="line">    <span class="function">String <span class="title">test</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="string">"test"</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h3 id="run-applicationdemojava"><a href="#Run-ApplicationDemo-java" class="headerlink" title="Run ApplicationDemo.java"></a>Run ApplicationDemo.java</h3><p><img src="/images/SpringBootFirst/2017-02-24_16.46.37.png" alt="console log"></p>
-<h3 id="test"><a href="#Test" class="headerlink" title="Test"></a>Test</h3><ul>
-<li><a href="http://localhost:8080/" target="_blank" rel="external">http://localhost:8080/</a><br><img src="/images/SpringBootFirst/2017-02-24_16.47.09.png" alt="http://localhost:8080/"></li>
-<li><a href="http://localhost:8080/test" target="_blank" rel="external">http://localhost:8080/test</a><br><img src="/images/SpringBootFirst/2017-02-24_16.47.16.png" alt="http://localhost:8080/test"></li>
-</ul>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://erics.github.io/2017/02/24/SpringBootFirst/" data-id="cizqqxz8c0001e15fi22rlkam" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/spring-boot/">spring boot</a></li></ul>
-
-    </footer>
-  </div>
   
 </article>
-
-
-  
-    <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2017/01/13/hello-world/" class="article-date">
-  <time datetime="2017-01-13T08:56:24.000Z" itemprop="datePublished">2017-01-13</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/01/13/hello-world/">Hello World</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
-<h2 id="quick-start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo new <span class="string">"My New Post"</span></div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
-<h3 id="run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo server</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
-<h3 id="generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo generate</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
-<h3 id="deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo deploy</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://erics.github.io/2017/01/13/hello-world/" data-id="cizqqxz8j0003e15fxpxff2mr" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
 
 </section>
         
