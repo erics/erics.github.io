@@ -61,6 +61,59 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-SpringBootMultiDataSource" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/03/02/SpringBootMultiDataSource/" class="article-date">
+  <time datetime="2017-03-02T06:11:03.000Z" itemprop="datePublished">2017-03-02</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/03/02/SpringBootMultiDataSource/">Spring Boot Use MultiDataSource</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <!-- toc -->
+<ul>
+<li><a href="#1配置多個數據來源">1.配置多個數據來源</a></li>
+<li><a href="#2增加-jdbctemplate-支援多個數據來源">2.增加 JdbcTemplate 支援多個數據來源</a></li>
+<li><a href="#3單元測試">3.單元測試</a></li>
+</ul>
+<!-- tocstop -->
+<h2 id="1配置多個數據來源"><a href="#1-配置多個數據來源" class="headerlink" title="1.配置多個數據來源"></a>1.配置多個數據來源</h2><p>application.properties</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">spring.datasource.primary.driver-class-name=oracle.jdbc.driver.OracleDriver</div><div class="line">spring.datasource.primary.url=jdbc:oracle:thin:@IP:1521:UID</div><div class="line">spring.datasource.primary.username=username</div><div class="line">spring.datasource.primary.password=password</div><div class="line"></div><div class="line">spring.datasource.secondary.driver-class-name=oracle.jdbc.driver.OracleDriver</div><div class="line">spring.datasource.secondary.url=jdbc:oracle:thin:@IP:1521:UID</div><div class="line">spring.datasource.secondary.username=username</div><div class="line">spring.datasource.secondary.password=password</div></pre></td></tr></table></figure>
+<h2 id="2增加-jdbctemplate-支援多個數據來源"><a href="#2-增加-JdbcTemplate-支援多個數據來源" class="headerlink" title="2.增加 JdbcTemplate 支援多個數據來源"></a>2.增加 JdbcTemplate 支援多個數據來源</h2><p>DBConfig.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> com.monster.app.config;</div><div class="line"></div><div class="line"><span class="keyword">import</span> javax.sql.DataSource;</div><div class="line"></div><div class="line"><span class="keyword">import</span> org.springframework.beans.factory.annotation.Qualifier;</div><div class="line"><span class="keyword">import</span> org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;</div><div class="line"><span class="keyword">import</span> org.springframework.boot.context.properties.ConfigurationProperties;</div><div class="line"><span class="keyword">import</span> org.springframework.context.annotation.Bean;</div><div class="line"><span class="keyword">import</span> org.springframework.context.annotation.Configuration;</div><div class="line"><span class="keyword">import</span> org.springframework.context.annotation.Primary;</div><div class="line"><span class="keyword">import</span> org.springframework.jdbc.core.JdbcTemplate;</div><div class="line"></div><div class="line"><span class="meta">@Configuration</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DBConfig</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="meta">@Bean</span>(name = <span class="string">"primaryDataSource"</span>)</div><div class="line">    <span class="meta">@Qualifier</span>(<span class="string">"primaryDataSource"</span>)</div><div class="line">    <span class="meta">@ConfigurationProperties</span>(prefix = <span class="string">"spring.datasource.primary"</span>)</div><div class="line">    <span class="function"><span class="keyword">public</span> DataSource <span class="title">primaryDataSource</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> DataSourceBuilder.create().build();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Bean</span>(name = <span class="string">"secondaryDataSource"</span>)</div><div class="line">    <span class="meta">@Qualifier</span>(<span class="string">"secondaryDataSource"</span>)</div><div class="line">    <span class="meta">@Primary</span></div><div class="line">    <span class="meta">@ConfigurationProperties</span>(prefix = <span class="string">"spring.datasource.secondary"</span>)</div><div class="line">    <span class="function"><span class="keyword">public</span> DataSource <span class="title">secondaryDataSource</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> DataSourceBuilder.create().build();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Bean</span>(name = <span class="string">"primaryJdbcTemplate"</span>)</div><div class="line">    <span class="function"><span class="keyword">public</span> JdbcTemplate <span class="title">primaryJdbcTemplate</span><span class="params">(@Qualifier(<span class="string">"primaryDataSource"</span>)</span> DataSource dataSource) </span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">new</span> JdbcTemplate(dataSource);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Bean</span>(name = <span class="string">"secondaryJdbcTemplate"</span>)</div><div class="line">    <span class="function"><span class="keyword">public</span> JdbcTemplate <span class="title">secondaryJdbcTemplate</span><span class="params">(</span></span></div><div class="line">            @Qualifier(<span class="string">"secondaryDataSource"</span>) DataSource dataSource) &#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">new</span> JdbcTemplate(dataSource);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="3單元測試"><a href="#3-單元測試" class="headerlink" title="3.單元測試"></a>3.單元測試</h2><ul>
+<li>原@SpringApplicationConfiguration已經棄用，spring boot 1.5 需使用@SpringBootTest</li>
+<li>@RunWith(SpringJUnit4ClassRunner.class)中的SpringJUnit4ClassRunner.class也改為SpringRunner.class</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> com.monster.multidatasource;</div><div class="line"></div><div class="line"><span class="keyword">import</span> org.junit.Assert;</div><div class="line"><span class="keyword">import</span> org.junit.Before;</div><div class="line"><span class="keyword">import</span> org.junit.Test;</div><div class="line"><span class="keyword">import</span> org.junit.runner.RunWith;</div><div class="line"><span class="keyword">import</span> org.springframework.beans.factory.annotation.Autowired;</div><div class="line"><span class="keyword">import</span> org.springframework.beans.factory.annotation.Qualifier;</div><div class="line"><span class="keyword">import</span> org.springframework.boot.test.context.SpringBootTest;</div><div class="line"><span class="keyword">import</span> org.springframework.boot.test.context.SpringBootTest.WebEnvironment;</div><div class="line"><span class="keyword">import</span> org.springframework.jdbc.core.JdbcTemplate;</div><div class="line"><span class="keyword">import</span> org.springframework.test.context.junit4.SpringRunner;</div><div class="line"></div><div class="line"><span class="keyword">import</span> com.monster.app.ApplicationDemo;</div><div class="line"></div><div class="line"><span class="meta">@RunWith</span>(SpringRunner.class)</div><div class="line"><span class="meta">@SpringBootTest</span>(webEnvironment = WebEnvironment.MOCK, classes = ApplicationDemo.class)</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MultiDataSourceTest</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="meta">@Autowired</span></div><div class="line">    <span class="meta">@Qualifier</span>(<span class="string">"primaryJdbcTemplate"</span>)</div><div class="line">    <span class="keyword">protected</span> JdbcTemplate jdbcTemplate1;</div><div class="line"></div><div class="line">    <span class="meta">@Autowired</span></div><div class="line">    <span class="meta">@Qualifier</span>(<span class="string">"secondaryJdbcTemplate"</span>)</div><div class="line">    <span class="keyword">protected</span> JdbcTemplate jdbcTemplate2;</div><div class="line"></div><div class="line">    <span class="meta">@Before</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setUp</span><span class="params">()</span> </span>&#123;</div><div class="line">        jdbcTemplate1.update(<span class="string">"delete from book"</span>);</div><div class="line">        jdbcTemplate2.update(<span class="string">"delete from book"</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Test</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">        jdbcTemplate1.update(<span class="string">"insert into book(barcode,bookname,author) values(?, ?, ?)"</span>,</div><div class="line">                <span class="string">"9781617292545"</span>, <span class="string">"Spring Boot in Action"</span>, <span class="string">"Craig Walls"</span>);</div><div class="line">        jdbcTemplate1.update(<span class="string">"insert into book(barcode,bookname,author) values(?, ?, ?)"</span>,</div><div class="line">                <span class="string">"9781633430235"</span>, <span class="string">"Docker in Action"</span>, <span class="string">"Jeff Nickoloff"</span>);</div><div class="line"></div><div class="line">        jdbcTemplate2.update(<span class="string">"insert into book(barcode,bookname,author) values(?, ?, ?)"</span>,</div><div class="line">                <span class="string">"9781617292545"</span>, <span class="string">"Spring Boot in Action"</span>, <span class="string">"Craig Walls"</span>);</div><div class="line"></div><div class="line">        Assert.assertEquals(<span class="string">"2"</span>,</div><div class="line">                jdbcTemplate1.queryForObject(<span class="string">"select count(1) from book"</span>, String.class));</div><div class="line">        Assert.assertEquals(<span class="string">"1"</span>,</div><div class="line">                jdbcTemplate2.queryForObject(<span class="string">"select count(1) from book"</span>, String.class));</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://erics.github.io/2017/03/02/SpringBootMultiDataSource/" data-id="cizs3sa5k00032p5fjs3aa11h" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/spring-boot/">spring boot</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/unit-test/">unit test</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-SpringBootConnectOracle" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/03/01/SpringBootConnectOracle/" class="article-date">
@@ -129,7 +182,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://erics.github.io/2017/03/01/SpringBootConnectOracle/" data-id="cizqqxz870000e15f6nivzcn0" class="article-share-link">Share</a>
+      <a data-url="https://erics.github.io/2017/03/01/SpringBootConnectOracle/" data-id="cizs3sa5800002p5fq9yfbjj1" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/spring-boot/">spring boot</a></li></ul>
@@ -175,7 +228,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://erics.github.io/2017/02/24/SpringBootFirst/" data-id="cizqqxz8c0001e15fi22rlkam" class="article-share-link">Share</a>
+      <a data-url="https://erics.github.io/2017/02/24/SpringBootFirst/" data-id="cizs3sa5e00012p5fapr542zv" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/spring-boot/">spring boot</a></li></ul>
@@ -222,7 +275,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://erics.github.io/2017/01/13/hello-world/" data-id="cizqqxz8j0003e15fxpxff2mr" class="article-share-link">Share</a>
+      <a data-url="https://erics.github.io/2017/01/13/hello-world/" data-id="cizs3sa5m00042p5futhz1yyj" class="article-share-link">Share</a>
       
       
     </footer>
@@ -244,7 +297,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring-boot/">spring boot</a></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring-boot/">spring boot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/unit-test/">unit test</a></li></ul>
     </div>
   </div>
 
@@ -254,7 +307,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/spring-boot/" style="font-size: 10px;">spring boot</a>
+      <a href="/tags/spring-boot/" style="font-size: 20px;">spring boot</a> <a href="/tags/unit-test/" style="font-size: 10px;">unit test</a>
     </div>
   </div>
 
@@ -274,6 +327,10 @@
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2017/03/02/SpringBootMultiDataSource/">Spring Boot Use MultiDataSource</a>
+          </li>
         
           <li>
             <a href="/2017/03/01/SpringBootConnectOracle/">Spring Boot JDBC connect Oracle</a>
